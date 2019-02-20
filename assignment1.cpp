@@ -9,7 +9,7 @@ int main(){
 	queries.open("queries.txt");
 	cout << "HI" << endl;
 
-
+	//test
 	documents.close();
 	queries.close();
 	return 0;
