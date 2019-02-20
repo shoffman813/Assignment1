@@ -7,7 +7,7 @@ int main(){
 	ifstream queries;
 	documents.open("dataset.txt");
 	queries.open("queries.txt");
-
+	cout << "HI" << endl;
 
 
 	documents.close();
