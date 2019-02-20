@@ -8,7 +8,7 @@ int main(){
 	documents.open("dataset.txt");
 	queries.open("queries.txt");
 	cout << "HI" << endl;
-
+	//last time!
 	//test
 	documents.close();
 	queries.close();
