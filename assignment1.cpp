@@ -39,52 +39,80 @@ int isDocNumber(string s,int count){
 	}
 }
 	
-
-int main(){
+vector<vector<string> > readDocs(){
 	int count = 2;
 	ifstream documents;
-	ifstream queries;
 	documents.open("dataset2.txt");
-	queries.open("queries.txt");
 	vector<vector<string> > doc_vector;
-	vector<vector<string> > query_vector;
 	vector<string> doc;
-	vector<string> query;
 	string doc_word;
-	string line;
-	//some get line function to check if it's a doc number
 	documents >> doc_word;
 	doc.push_back(doc_word);
 	documents >> doc_word;
 	vector<string> temp;
 	while(!documents.eof()){
-		cout << "doc_word is " << doc_word << endl;
 		if(isDocNumber(doc_word,count)){
-		//	cout << "doc_word " << doc_word << " is a document number" << endl;
 			temp = doc;
 			doc_vector.push_back(temp);
-		//	cout << "Pushed previous vector on master vector" << endl;
-				
 			doc.clear();
-		//	cout << "Cleared doc vector for start of new doc" << endl;
 			count++;
 		}
 		doc.push_back(doc_word);
-		//cout << "Pushed " << doc_word << "  on doc vector" << endl;		
 		documents >> doc_word;
 	}
 	doc_vector.push_back(doc);
+	documents.close();
+	return doc_vector;
+}
+
+vector<vector<string> > readQueries(){
+	int count = 2;
+	ifstream queries;
+	queries.open("queries2.txt");
+	vector<vector<string> > query_vector;
+	vector<string> query;
+	string query_word;
+	queries >> query_word;
+	query.push_back(query_word);
+	queries >> query_word;
+	vector<string> temp;
+	while(!queries.eof()){
+		if(isDocNumber(query_word,count)){
+			temp = query;
+			query_vector.push_back(temp);
+			query.clear();
+			count++;
+		}
+		query.push_back(query_word);
+		queries >> query_word;
+	}
+	query_vector.push_back(query);
+	queries.close();
+	return query_vector;
+}
+
+int main(){
+	vector<vector<string> > doc_vector;
+	vector<vector<string> > query_vector;
+	vector<string> temp;
+	doc_vector = readDocs();
 	int i,j;
 	cout << "master doc vector size is " << doc_vector.size() << endl;
 	for(i=0;i<doc_vector.size();i++){
 		temp = doc_vector.at(i);
-		//cout << "current doc has " << temp.size() << " words in it" << endl;
 		for(j=1;j<temp.size();j++){
 			cout << temp.at(j) << " ";
 		}
 		cout << endl;
 	}
-	documents.close();
-	queries.close();
+	query_vector = readQueries();
+	cout << "master query vector size is " << query_vector.size() << endl;
+	for(i=0;i<query_vector.size();i++){
+		temp = query_vector.at(i);
+		for(j=1;j<temp.size();j++){
+			cout << temp.at(j) << " ";
+		}
+		cout << endl;
+	}	
 	return 0;
 }

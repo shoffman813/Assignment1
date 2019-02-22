@@ -34,3 +34,47 @@ viscosity is investigated .  it can be shown that this problem can again
 be treated by the boundary-layer approximation, the only novel feature
 being that the free stream has a constant vorticity .  the discussion
 here is restricted to two-dimensional incompressible steady flow .
+3
+the boundary layer in simple shear flow past a flat plate .
+the boundary-layer equations are presented for steady
+incompressible flow with no pressure gradient .
+4
+approximate solutions of the incompressible laminar
+boundary layer equations for a plate in shear flow .
+  the two-dimensional steady boundary-layer
+problem for a flat plate in a
+shear flow of incompressible fluid is considered .
+solutions for the boundary-
+layer thickness, skin friction, and the velocity
+distribution in the boundary
+layer are obtained by the karman-pohlhausen
+technique .  comparison with
+the boundary layer of a uniform flow has also
+been made to show the effect of
+vorticity .
+5
+one-dimensional transient heat conduction into a double-layer
+slab subjected to a linear heat input for a small time
+internal .
+  analytic solutions are presented for the transient heat
+conduction in composite slabs exposed at one surface to a
+triangular heat rate .  this type of heating rate may occur, for
+example, during aerodynamic heating .
+6
+one-dimensional transient heat flow in a multilayer
+slab .
+  in a recent contribution to the readers'
+forum wassermann gave analytic
+solutions for the temperature in a double
+layer slab, with a triangular heat
+rate input at one face, insulated at the other,
+and with no thermal resistance
+at the interface .  his solutions were for the
+three particular cases..
+i propose here to give the general solution
+to this problem, to indicate
+briefly how it is obtained using the method of
+reference 2, and to point out
+that the solutions given by wassermann are
+incomplete for times longer
+than the duration of the heat input .
