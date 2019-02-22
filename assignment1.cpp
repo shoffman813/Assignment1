@@ -4,8 +4,8 @@
 #include <string>
 using namespace std;
 
-int isDocNumber(string s){
-	int i;
+int isDocNumber(string s,int count){
+	/*int i;
 	cout << "in isDocNumber function testing " << s << endl;
 	cout << "size of string is " << s.size() << endl;
 	for(i=0;i<s.size()-1;i++){
@@ -21,11 +21,27 @@ int isDocNumber(string s){
 	else{
 		cout << "It's a doc number" << endl;
 		return 1;
+	}*/
+	int i;
+	for(i=0;i<s.size();i++){
+		if(!isdigit(s[i])){
+			cout << "Not a number" << endl;
+			return 0;
+		}
+	}
+	if(count == stoi(s)){
+		cout << "It is a doc number because count is " << count << " and s is " << s << endl;
+		return 1;
+	}
+	else{
+		cout << "not a doc number because count is " << count << " and s is " << s << endl;
+		return 0;
 	}
 }
 	
 
 int main(){
+	int count = 2;
 	ifstream documents;
 	ifstream queries;
 	documents.open("dataset2.txt");
@@ -42,8 +58,8 @@ int main(){
 	documents >> doc_word;
 	vector<string> temp;
 	while(!documents.eof()){
-	//	cout << "doc_word is " << doc_word << endl;
-		if(isDocNumber(doc_word)){
+		cout << "doc_word is " << doc_word << endl;
+		if(isDocNumber(doc_word,count)){
 		//	cout << "doc_word " << doc_word << " is a document number" << endl;
 			temp = doc;
 			doc_vector.push_back(temp);
@@ -51,6 +67,7 @@ int main(){
 				
 			doc.clear();
 		//	cout << "Cleared doc vector for start of new doc" << endl;
+			count++;
 		}
 		doc.push_back(doc_word);
 		//cout << "Pushed " << doc_word << "  on doc vector" << endl;		
