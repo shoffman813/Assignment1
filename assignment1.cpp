@@ -25,16 +25,16 @@ int isDocNumber(string s,int count){
 	int i;
 	for(i=0;i<s.size();i++){
 		if(!isdigit(s[i])){
-			cout << "Not a number" << endl;
+	//		cout << "Not a number" << endl;
 			return 0;
 		}
 	}
 	if(count == stoi(s)){
-		cout << "It is a doc number because count is " << count << " and s is " << s << endl;
+	//	cout << "It is a doc number because count is " << count << " and s is " << s << endl;
 		return 1;
 	}
 	else{
-		cout << "not a doc number because count is " << count << " and s is " << s << endl;
+	//	cout << "not a doc number because count is " << count << " and s is " << s << endl;
 		return 0;
 	}
 }
@@ -42,7 +42,7 @@ int isDocNumber(string s,int count){
 vector<vector<string> > readDocs(){
 	int count = 2;
 	ifstream documents;
-	documents.open("dataset2.txt");
+	documents.open("dataset.txt");
 	vector<vector<string> > doc_vector;
 	vector<string> doc;
 	string doc_word;
@@ -68,7 +68,7 @@ vector<vector<string> > readDocs(){
 vector<vector<string> > readQueries(){
 	int count = 2;
 	ifstream queries;
-	queries.open("queries2.txt");
+	queries.open("queries.txt");
 	vector<vector<string> > query_vector;
 	vector<string> query;
 	string query_word;
@@ -95,24 +95,47 @@ int main(){
 	vector<vector<string> > doc_vector;
 	vector<vector<string> > query_vector;
 	vector<string> temp;
+	vector<string> temp2;
 	doc_vector = readDocs();
 	int i,j;
 	cout << "master doc vector size is " << doc_vector.size() << endl;
-	for(i=0;i<doc_vector.size();i++){
-		temp = doc_vector.at(i);
-		for(j=1;j<temp.size();j++){
-			cout << temp.at(j) << " ";
-		}
-		cout << endl;
-	}
+	//for(i=0;i<doc_vector.size();i++){
+	//	temp = doc_vector.at(i);
+	//	for(j=1;j<temp.size();j++){
+	//		cout << temp.at(j) << " ";
+	//	}
+	//	cout << endl;
+	//}
 	query_vector = readQueries();
 	cout << "master query vector size is " << query_vector.size() << endl;
+//	for(i=0;i<query_vector.size();i++){
+//		temp = query_vector.at(i);
+//		for(j=1;j<temp.size();j++){
+//			cout << temp.at(j) << " ";
+//		}
+//		cout << endl;
+//	}
+	for(i=0;i<doc_vector.size();i++){
+		temp = doc_vector.at(i);
+		sort(temp.begin()+1,temp.end());
+		doc_vector[i] = temp;
+	}
 	for(i=0;i<query_vector.size();i++){
 		temp = query_vector.at(i);
-		for(j=1;j<temp.size();j++){
-			cout << temp.at(j) << " ";
-		}
-		cout << endl;
-	}	
+		sort(temp.begin()+1,temp.end());
+		query_vector[i] = temp;
+	}
+	int similarity1;
+	int similarity2;
+	string doc_word, q_word;
+	int k;
+	for(i=0;i<query_vector.size();i++){
+		temp = query_vector.at(i);
+		for(k=0;i<doc_vector.size();k++){
+			temp2 = doc_vector.at(k);
+			for(j=0;j<temp.size();j++){
+				word = temp.at(j);
+				
+				
 	return 0;
 }
