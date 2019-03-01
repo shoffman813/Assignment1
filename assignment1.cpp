@@ -5,64 +5,78 @@
 using namespace std;
 
 int isDocNumber(string s,int count){
-	/*int i;
-	cout << "in isDocNumber function testing " << s << endl;
-	cout << "size of string is " << s.size() << endl;
-	for(i=0;i<s.size()-1;i++){
-		if(!isdigit(s[i])){
-			cout << "It's not a doc number" << endl;
-			return 0;		
-		}
-	}
-	if(s[s.size()] != '\n'){
-		cout << "it's not a doc number" << endl;
-		return 0;
-	}
-	else{
-		cout << "It's a doc number" << endl;
-		return 1;
-	}*/
 	int i;
 	for(i=0;i<s.size();i++){
 		if(!isdigit(s[i])){
-	//		cout << "Not a number" << endl;
 			return 0;
 		}
 	}
 	if(count == stoi(s)){
-	//	cout << "It is a doc number because count is " << count << " and s is " << s << endl;
 		return 1;
 	}
 	else{
-	//	cout << "not a doc number because count is " << count << " and s is " << s << endl;
 		return 0;
 	}
 }
+
+int seenPreviously(string word, vector<string> seenWords){
+	int i;
+	for(i=0;i<seenWords.size();i++){
+		if(seenWords.at(i).compare(word) == 0){
+			cout << "seen the word before at index " << i << endl;
+			return i;
+		}
+	}
+	cout << "never seen that word before" << endl;
+	return -1;
+}	
 	
-vector<vector<string> > readDocs(){
+vector<vector<int> > readDocs(vector<string> &seenWords){
+	cout << "In function" << endl;
 	int count = 2;
 	ifstream documents;
-	documents.open("dataset.txt");
-	vector<vector<string> > doc_vector;
-	vector<string> doc;
+	documents.open("dataset2.txt");
+	vector<int> doc_freq;	//each doc will have a frequency vector
+	vector<vector<int> > doc_matrix;
 	string doc_word;
+	int i;
+	vector<int> temp;
+	vector<int> temp2;
+	documents >> doc_word;	//just the first doc number
 	documents >> doc_word;
-	doc.push_back(doc_word);
-	documents >> doc_word;
-	vector<string> temp;
 	while(!documents.eof()){
+		cout << "On word: " << doc_word << endl;
 		if(isDocNumber(doc_word,count)){
-			temp = doc;
-			doc_vector.push_back(temp);
-			doc.clear();
+			cout << "it's a doc number" << endl;
+			temp = doc_freq;
+			doc_matrix.push_back(temp);
+			for(i=0;i<seenWords.size();i++){
+				doc_freq.at(i) = 0;
+			}
 			count++;
 		}
-		doc.push_back(doc_word);
+		else{
+			int index = seenPreviously(doc_word,seenWords);
+			if(index >= 0){
+				doc_freq.at(index) += 1;
+			}
+			else{
+				seenWords.push_back(doc_word);
+				cout << "Added " << doc_word << " to seenWords" << endl;
+				if(count > 2){
+					cout << "Count is " << count << endl;
+					for(i=0;i<count-2;i++){
+						doc_matrix.at(i).push_back(0);
+					}
+				}
+				doc_freq.push_back(1);
+			}
+		}
 		documents >> doc_word;
 	}
-	doc_vector.push_back(doc);
+	doc_matrix.push_back(doc_freq);
 	documents.close();
-	return doc_vector;
+	return doc_matrix;
 }
 
 vector<vector<string> > readQueries(){
@@ -92,50 +106,28 @@ vector<vector<string> > readQueries(){
 }
 
 int main(){
-	vector<vector<string> > doc_vector;
+	vector<vector<int> > matrix;
 	vector<vector<string> > query_vector;
-	vector<string> temp;
-	vector<string> temp2;
-	doc_vector = readDocs();
+	vector<string> words;
+	cout << "Calling readDocs" << endl;
+	matrix = readDocs(words);
 	int i,j;
-	cout << "master doc vector size is " << doc_vector.size() << endl;
-	//for(i=0;i<doc_vector.size();i++){
-	//	temp = doc_vector.at(i);
-	//	for(j=1;j<temp.size();j++){
-	//		cout << temp.at(j) << " ";
-	//	}
-	//	cout << endl;
-	//}
-	query_vector = readQueries();
-	cout << "master query vector size is " << query_vector.size() << endl;
-//	for(i=0;i<query_vector.size();i++){
-//		temp = query_vector.at(i);
-//		for(j=1;j<temp.size();j++){
-//			cout << temp.at(j) << " ";
-//		}
-//		cout << endl;
-//	}
-	for(i=0;i<doc_vector.size();i++){
-		temp = doc_vector.at(i);
-		sort(temp.begin()+1,temp.end());
-		doc_vector[i] = temp;
+	vector<int> freq_vector;
+	for(i=0;i<matrix.size();i++){
+		freq_vector = matrix.at(i);
+		for(j=0;j<freq_vector.size();j++){
+			cout << freq_vector.at(j);
+		}
+		cout << endl;
 	}
-	for(i=0;i<query_vector.size();i++){
-		temp = query_vector.at(i);
-		sort(temp.begin()+1,temp.end());
-		query_vector[i] = temp;
+	cout << "Seen words are: " << endl;
+	for(i=0;i<words.size();i++){
+		cout << words.at(i) << " ";
 	}
+	//query_vector = readQueries();
 	int similarity1;
 	int similarity2;
 	string doc_word, q_word;
 	int k;
-	for(i=0;i<query_vector.size();i++){
-		temp = query_vector.at(i);
-		for(k=0;i<doc_vector.size();k++){
-			temp2 = doc_vector.at(k);
-			for(j=0;j<temp.size();j++){
-				word = temp.at(j);
-				
-				
 	return 0;
 }
