@@ -141,8 +141,19 @@ int main(){
 	for(i=0;i<words.size();i++)
 		query_freq.push_back(0); 	//initialize the frequency vector to zeros
 	vector<string> temp_q;		//holds the vector containing the requested query
-	cout << "Enter the number of the query you'd like to search, enter 0 when you want to quit" << endl;
+	cout << "Enter 1 if you would like to see the entire list of ranked documents for each query, enter 2 if you would only like to see the top 10." << endl;
+	int option;
+	cin >> option;
+	if(option != 1 && option != 2){
+		cout << "Invalid input" << endl;
+		return 0;
+	}
+	cout << "Enter the number of the query you'd like to search, a number between 1 and 225, or enter 0 when you want to quit" << endl;
 	cin >> query_number;
+	if(query_number < 0 || query_number > 225){
+		cout << "Invalid input" << endl;
+		return 0;
+	}
 	while(query_number > 0){
 		size_query_vector1 = 0;
 		size_query_vector2 = 0;
@@ -190,23 +201,36 @@ int main(){
 			insertRanking(doc_rank2,pair);	//insert it into a vector containing the ranking the count way
 		}
 		cout << "Document ranking using binary term frequency: ";
-		for(i=0;i<doc_rank1.size();i++){
-			cout << doc_rank1.at(i).at(1) << " ";
+		if(option == 1){
+			for(i=0;i<doc_rank1.size();i++){
+				cout << doc_rank1.at(i).at(1) << " ";
+			}
+			cout << endl << "Document ranking using count of term frequencies: ";
+			for(i=0;i<doc_rank2.size();i++){
+				cout << doc_rank2.at(i).at(1) << " ";
+			}
 		}
-		cout << endl << "Document ranking using count of term frequencies: ";
-		for(i=0;i<doc_rank2.size();i++){
-			cout << doc_rank2.at(i).at(1) << " ";
+		if(option == 2){
+			for(i=0;i<10;i++){
+				cout << doc_rank1.at(i).at(1) << " ";
+			}
+			cout << endl << "Document ranking using count of term frequencies: ";
+			for(i=0;i<10;i++){
+				cout << doc_rank2.at(i).at(1) << " ";
+			}
 		}
 		doc_rank1.clear();
 		doc_rank2.clear();
-		cout << endl << "Enter the number of the query you'd like to search, enter 0 when you want to quit" << endl;
+		cout << endl << "Enter the number of the query you'd like to search, a number between 1 and 225, or enter 0 when you want to quit" << endl;
         	cin >> query_number;
+		if(query_number < 0 || query_number > 225){
+			cout << "Invalid input" << endl;
+			return 0;
+		}
 		query_freq.clear();
 		for(i=0;i<words.size();i++){
 			query_freq.push_back(0);
 		}
 	}
-	string doc_word, q_word;
-	int k;
 	return 0;
 }
