@@ -205,11 +205,11 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
         }
         if(option == 2){        //only want to see the top 10 documents
         	for(i=0;i<10;i++){
-                	cout << ranking1.at(i).at(1) << " ";
+                	cout << ranking1.at(i).at(1) << " " << ranking1.at(i).at(0) << " ";
                 }
                 cout << endl << "Document ranking using count of term frequencies: ";
                 for(i=0;i<10;i++){
-                	cout << ranking2.at(i).at(1) << " ";
+                	cout << ranking2.at(i).at(1) << " " << ranking2.at(i).at(0) << " ";
                 }
         }
 	return;
