@@ -213,6 +213,42 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
                 }
         }
 	return;
+
+}
+
+/*Assignment 2 Functions*/
+
+void Rocchio(int classNum, vector<vector<double>> cosineSimilarity) {
+
+	vector<vector<double>> classMatrix(classNum, vector<double>(2));
+	vector centroids(classNum); //Vector of centroids for each class number 
+	int docFlag = 0; //Flag for whether or not a document changes classes
+	double centroid = 0; //Variable to store a single centroid calculation
+
+	int initClassSize = 0; //Initial size for the first time documents are assigned to classes
+	int docCount = 1400; //May need to be changed??
+	int remainder = 0;
+	int count = 0;
+
+	initClassSize = classSize / docCount;
+	remainder = classSize % docCount; 
+
+	//Assign documents arbitrarily to classes
+		//compute centroid for each class
+
+	for(int i = 0; i < classNum; i++) {	
+		if(count + remainder < docCount) {
+			while(count2 < initClassSize) {
+		
+			}
+		}
+	}
+
+	while (docFlag > 0) { //Reassign each document to closest centroid until no document moves
+		
+	}
+
+	return;
 }
 	
 int main(){
@@ -233,6 +269,7 @@ int main(){
 	vector<vector<double> > doc_rank2;	//holds document relevance ranking list based on count frequency
 	vector<int> query_freq;	//frequency vector for the user's query
 	
+	int classNumber = 0; //Number of classes for Rocchio, entered by user
 	//processing
 	
 	matrix = readDocs(words);
@@ -265,6 +302,19 @@ int main(){
 		
 		printResults(option, doc_rank1, doc_rank2);
 		
+		/*Rocchio goes here*/
+
+		cout << "Enter the desired number of classes" << endl;
+		cin >> classNumber;		
+		if (classNumber <= 0 || classNumber > 1400) { //error checking
+			cout << "Invalid input" << endl;
+			return 0;
+		}
+		
+		Rocchio(classNumber, doc_rank2);
+
+		/*Rocchio ends here*/
+
 		doc_rank1.clear();
 		doc_rank2.clear();
 		cout << endl << "Enter the number of the query you'd like to search, a number between 1 and 225, or enter 0 when you want to quit" << endl;
