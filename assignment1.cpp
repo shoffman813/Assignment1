@@ -218,32 +218,26 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
 
 /*Assignment 2 Functions*/
 
-void Rocchio(int classNum, vector<vector<double>> cosineSimilarity) {
+void randomizeCentroids(int classNum, int wordsSize, vector<vector<int>> &cMatrix) {
 
-	vector<vector<double>> classMatrix(classNum, vector<double>(2));
-	vector centroids(classNum); //Vector of centroids for each class number 
-	int docFlag = 0; //Flag for whether or not a document changes classes
-	double centroid = 0; //Variable to store a single centroid calculation
-
-	int initClassSize = 0; //Initial size for the first time documents are assigned to classes
-	int docCount = 1400; //May need to be changed??
-	int remainder = 0;
-	int count = 0;
-
-	initClassSize = classSize / docCount;
-	remainder = classSize % docCount; 
-
-	//Assign documents arbitrarily to classes
-		//compute centroid for each class
-
-	for(int i = 0; i < classNum; i++) {	
-		if(count + remainder < docCount) {
-			while(count2 < initClassSize) {
-		
-			}
+	int a = 0;
+	for(int i=0; i < classNum; i++) {
+		vector v;
+		for(int j = 0; j< wordsSize; j++) {
+			a = rand()%2;
+			v.at(j) = a;
 		}
+		cMatrix.push_back(v);
+		v.clear;
 	}
+	return;
+}
 
+void Rocchio(int classNum, int wordsSize, vector<vector<int>> &cMatrix) {
+
+	int docFlag = 0; //Flag for whether or not a document changes classes
+	
+	
 	while (docFlag > 0) { //Reassign each document to closest centroid until no document moves
 		
 	}
@@ -270,6 +264,8 @@ int main(){
 	vector<int> query_freq;	//frequency vector for the user's query
 	
 	int classNumber = 0; //Number of classes for Rocchio, entered by user
+	vector<vector<int>> centroidMatrix;
+
 	//processing
 	
 	matrix = readDocs(words);
@@ -311,7 +307,7 @@ int main(){
 			return 0;
 		}
 		
-		Rocchio(classNumber, doc_rank2);
+		randomizeCentroids(classNumber, words.size(), centroidMatrix);
 
 		/*Rocchio ends here*/
 
