@@ -1,0 +1,28 @@
+Rocchio Method:
+
+Get number of classes
+
+Have a loop that generates that number of random centroids.
+	
+	Randomize by randomly selecting 0 or 1 for each spot in the centroid vector.
+
+Add each centroid to a centroid matrix for storage.
+
+Loop through document matrix and compute cosine similarity value between that document and each centroid, 
+then decide which centroid class it belongs to and add the document to that class.
+	
+	Reuse the insertRanking function to keep ordered list of documents from most similar to centroid
+	to least similar to centroid.
+	
+	Each time a document is added to a class, recompute that class's centroid.
+	
+	Each time a centroid is recomputed, recompute the cosine similarity of each of the class's
+	least similar documents to ensure those documents do not need to switch classes.
+
+		Keep testing each class's least relevant documents until one does not switch classes.
+
+Now, each document is assigned to its official class.
+
+For each requested query, compute the cosine similarity between that query frequency vector and every
+centroid vector, and return the class of documents with the highest cosine similarity value.
+
