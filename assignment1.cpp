@@ -218,7 +218,7 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
 
 /*Assignment 2 Functions*/
 
-void randomizeCentroids(int classNum, int wordsSize, vector<vector<int>> &cMatrix) { //Generates initial matrix of randomized centroids
+void randomizeCentroids(int classNum, int wordsSize, vector<vector<int> > &cMatrix) { //Generates initial matrix of randomized centroids
 
 	int a = 0;
 	vector<int> v;
@@ -234,7 +234,7 @@ void randomizeCentroids(int classNum, int wordsSize, vector<vector<int>> &cMatri
 }
 
 /*
-void Rocchio(int classNum, int wordsSize, vector<vector<int>> &cMatrix, vector<vector<int>> &dMatrix) {
+void Rocchio(int classNum, int wordsSize, vector<vector<int> > &cMatrix, vector<vector<int> > &dMatrix) {
 
 	int docFlag = 0; //Flag for whether or not a document changes classes
 	
@@ -261,10 +261,10 @@ int main(){
 	vector<int> query_freq;	//frequency vector for the user's query
 	
 	double classNumber = 0; //Number of classes for Rocchio, entered by user
-	vector<vector<int>> centroidMatrix; //A matrix of all centroid values
-	vector<vector<double>> singleDocRank; //Document relevance ranking list for each document for all centroids
+	vector<vector<int> > centroidMatrix; //A matrix of all centroid values
+	vector<vector<double> > singleDocRank; //Document relevance ranking list for each document for all centroids
 	vector<int> classAndDocNum(1401); //Class number assignment is stored at each document number
-	//vector<vector<vector<double>>> classMatrix;
+	//vector<vector<vector<double> > > classMatrix;
 	double maxCosClass = 0; //For saving the class number of the maximum cosine value
 	
 
@@ -308,7 +308,7 @@ int main(){
 			cout << "Invalid input" << endl;
 			return 0;
 		}
-		vector<vector<vector<double>>> classMatrix; //need to fix initialization
+		vector<vector<vector<double> > > classMatrix(classNumber); //need to fix initialization
 		//classMatrix.reserve(1400);
 
 		randomizeCentroids(classNumber, words.size(), centroidMatrix);
@@ -318,8 +318,11 @@ int main(){
 				pair.at(0) = computeCountCosineSimilarity(matrix.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
 				pair.at(1) = a + 1; //document number
 				insertRanking(singleDocRank, pair); //insert into single document ranking
-				if(pair.at(0) > maxCosClass) maxCosClass = b;
+				if(pair.at(0) == singleDocRank.at(0).at(0))
+					maxCosClass = b;
+				//if(pair.at(0) > maxCosClass) maxCosClass = b;
 			}
+			cout << "Max class for document " << a+1 << " is " << maxCosClass << endl;
 			pair = singleDocRank.at(0); //This is centroid/doc pair with the greatest cosine similarity
 			classAndDocNum.at(pair.at(1)) = maxCosClass; //Saving class number for each document
 			cout << endl << "here4" << endl;
