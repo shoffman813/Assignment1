@@ -218,32 +218,29 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
 
 /*Assignment 2 Functions*/
 
-void randomizeCentroids(int classNum, int wordsSize, vector<vector<int>> &cMatrix) {
+void randomizeCentroids(int classNum, int wordsSize, vector<vector<int>> &cMatrix) { //Generates initial matrix of randomized centroids
 
 	int a = 0;
+	vector<int> v;
 	for(int i=0; i < classNum; i++) {
-		vector v;
 		for(int j = 0; j< wordsSize; j++) {
 			a = rand()%2;
-			v.at(j) = a;
+			v.push_back(a);
 		}
 		cMatrix.push_back(v);
-		v.clear;
+		v.clear();
 	}
 	return;
 }
 
-void Rocchio(int classNum, int wordsSize, vector<vector<int>> &cMatrix) {
+/*
+void Rocchio(int classNum, int wordsSize, vector<vector<int>> &cMatrix, vector<vector<int>> &dMatrix) {
 
 	int docFlag = 0; //Flag for whether or not a document changes classes
 	
-	
-	while (docFlag > 0) { //Reassign each document to closest centroid until no document moves
-		
-	}
 
 	return;
-}
+}*/
 	
 int main(){
 	
@@ -263,8 +260,13 @@ int main(){
 	vector<vector<double> > doc_rank2;	//holds document relevance ranking list based on count frequency
 	vector<int> query_freq;	//frequency vector for the user's query
 	
-	int classNumber = 0; //Number of classes for Rocchio, entered by user
-	vector<vector<int>> centroidMatrix;
+	double classNumber = 0; //Number of classes for Rocchio, entered by user
+	vector<vector<int>> centroidMatrix; //A matrix of all centroid values
+	vector<vector<double>> singleDocRank; //Document relevance ranking list for each document for all centroids
+	vector<int> classAndDocNum(1401); //Class number assignment is stored at each document number
+	//vector<vector<vector<double>>> classMatrix;
+	double maxCosClass = 0; //For saving the class number of the maximum cosine value
+	
 
 	//processing
 	
@@ -300,14 +302,34 @@ int main(){
 		
 		/*Rocchio goes here*/
 
-		cout << "Enter the desired number of classes" << endl;
+		cout << endl << "Enter the desired number of classes" << endl;
 		cin >> classNumber;		
 		if (classNumber <= 0 || classNumber > 1400) { //error checking
 			cout << "Invalid input" << endl;
 			return 0;
 		}
-		
+		vector<vector<vector<double>>> classMatrix; //need to fix initialization
+		//classMatrix.reserve(1400);
+
 		randomizeCentroids(classNumber, words.size(), centroidMatrix);
+
+		for(int a = 0; a < matrix.size(); a++) {
+			for(int b = 0; b < centroidMatrix.size(); b++) {
+				pair.at(0) = computeCountCosineSimilarity(matrix.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
+				pair.at(1) = a + 1; //document number
+				insertRanking(singleDocRank, pair); //insert into single document ranking
+				if(pair.at(0) > maxCosClass) maxCosClass = b;
+			}
+			pair = singleDocRank.at(0); //This is centroid/doc pair with the greatest cosine similarity
+			classAndDocNum.at(pair.at(1)) = maxCosClass; //Saving class number for each document
+			cout << endl << "here4" << endl;
+			insertRanking(classMatrix.at(maxCosClass), pair); //problem line... adding to empty matrix, jumping ahead in memory
+			cout << endl << "here4.5" << endl;
+			singleDocRank.clear();
+			cout << endl << "here5" << endl;
+		}
+			
+		//Rocchio(classNumber, words.size(), centroidMatrix, matrix);
 
 		/*Rocchio ends here*/
 
