@@ -218,10 +218,10 @@ void printResults(int option, vector<vector<double> > ranking1, vector<vector<do
 
 /*Assignment 2 Functions*/
 
-void randomizeCentroids(int classNum, int wordsSize, vector<vector<int> > &cMatrix) { //Generates initial matrix of randomized centroids
+void randomizeCentroids(int classNum, int wordsSize, vector<vector<double> > &cMatrix) { //Generates initial matrix of randomized centroids
 
-	int a = 0;
-	vector<int> v;
+	double a = 0;
+	vector<double> v;
 	for(int i=0; i < classNum; i++) {
 		for(int j = 0; j< wordsSize; j++) {
 			a = rand()%2;
@@ -233,13 +233,33 @@ void randomizeCentroids(int classNum, int wordsSize, vector<vector<int> > &cMatr
 	return;
 }
 
-//Recomputes a centroid for a given class and saves it to the centroid matrix
-void recomputeCentroid(vector<vector<double> > &docClass, vector<vector<int> > &centroidMatrix, vector<vector<int> > &matrix,int classNumber) {
+//version of computeCountCosineSimilarity with doubles instead of ints
+double computeCountCosineSimilarity2(vector<double> document,vector<double> query){    //same function as above but for count term frequency
+        int doc_size = 0;
+        int numerator = 0;
+        int query_size = 0;
+        int i;
+        for(i=0;i<document.size();i++){         //for each term frequency in the vector
+                numerator += query.at(i) * document.at(i);        //calculate the dot product the count way
+        }
+        for(i=0;i<document.size();i++){ //calculate the ||d|| in cosine similarity equation
+                doc_size += (document.at(i) * document.at(i));  //the count way
+        }
+        for(i=0;i<query.size();i++){
+                query_size += (query.at(i) * query.at(i));
+        }
+        double denominator = sqrt(query_size) * sqrt(doc_size);       //calculate denominator of cosine similarity equation the count way
+        double cosine = numerator/denominator;
+        return cosine;
+}
 
-	int dc = docClass.size(); //Number of documents in cluster
+//Recomputes a centroid for a given class and saves it to the centroid matrix
+void recomputeCentroid(vector<vector<double> > &docClass, vector<vector<double> > &centroidMatrix, vector<vector<double> > &matrix,int classNumber) {
+
+	double dc = docClass.size(); //Number of documents in cluster
 	int docLength = matrix.at(0).size(); //length of each document vector
-	vector<int> newCentroid(docLength); //new centroid
-	vector<int> sum(docLength); //sum of document vectors
+	vector<double> newCentroid(docLength); //new centroid
+	vector<double> sum(docLength); //sum of document vectors
 	
 	for(int i = 0;i<docLength;i++){
 		sum.at(i) = 0;
@@ -253,18 +273,20 @@ void recomputeCentroid(vector<vector<double> > &docClass, vector<vector<int> > &
 	}
 	
 	for(int c = 0; c < sum.size(); c++) { //dividing each number in vector by the number of documents in the cluster
+	//	cout << endl << "sum.at(c) = " << sum.at(c) << endl;
 		newCentroid.at(c) = sum.at(c) / dc;
 	}
 	
 	for(int d = 0; d < newCentroid.size(); d++) { //Adding new centroid to centroid matrix
 		centroidMatrix.at(classNumber-1).at(d) = newCentroid.at(d);
+		//cout << newCentroid.at(d) << " ";
 	}
-	
+	//cout << endl;
 	return;
 }
 
 //Recomputes the cosine similarity for the least similar classes
-void recomputeCosineSim(vector<vector<vector<double> > > &classMatrix, vector<vector<int> > &matrix, vector<vector<int> > &centroidMatrix, int totalClassCount, int currentClass) {
+void recomputeCosineSim(vector<vector<vector<double> > > &classMatrix, vector<vector<double> > &matrix, vector<vector<double> > &centroidMatrix, int totalClassCount, int currentClass) {
 	vector<double> pair(2);
 	int classChangeFlag = 0;
 
@@ -273,7 +295,7 @@ void recomputeCosineSim(vector<vector<vector<double> > > &classMatrix, vector<ve
 		for(int b = classSize-1; b >= 0; b--) { //for each of the least relevant documents in the class
 			classChangeFlag = 0;
 			int docNum = classMatrix.at(a).at(b).at(1);
-			pair.at(0) = computeCountCosineSimilarity(matrix.at(docNum-1), centroidMatrix.at(currentClass-1)); //recomputing cosine similarity for each pair
+			pair.at(0) = computeCountCosineSimilarity2(matrix.at(docNum-1), centroidMatrix.at(currentClass-1)); //recomputing cosine similarity for each pair
 			pair.at(1) = docNum;
 			if(pair.at(0) > classMatrix.at(a).at(b).at(0)) {
 				classChangeFlag = 1;
@@ -306,9 +328,9 @@ int main(){
 	vector<int> query_freq;	//frequency vector for the user's query
 	
 	double classNumber = 0; //Number of classes for Rocchio, entered by user
-	vector<vector<int> > centroidMatrix; //A matrix of all centroid values
+	vector<vector<double> > centroidMatrix; //A matrix of all centroid values
 	vector<vector<double> > singleDocRank; //Document relevance ranking list for each document for all centroids
-	vector<int> classAndDocNum(1401); //Class number assignment is stored at each document number
+	vector<double> classAndDocNum(1401); //Class number assignment is stored at each document number
 	//vector<vector<vector<double> > > classMatrix;
 	double maxCosClass = 0; //For saving the class number of the maximum cosine value
 	double maxCos = 0;	
@@ -353,17 +375,19 @@ int main(){
 			cout << "Invalid input" << endl;
 			return 0;
 		}
+		
 		vector<vector<vector<double> > > classMatrix(classNumber); //need to fix initialization
 
 		randomizeCentroids(classNumber, words.size(), centroidMatrix);
 
-
+		vector<vector<double> > matrix2;
+		matrix2.reserve(matrix.size());
+		for (auto&& v : matrix) matrix2.emplace_back(begin(v), end(v));
 		
-		//Surround in while loop?
 		for(int a = 0; a < matrix.size(); a++) {
 			maxCos = 0;
 			for(int b = 0; b < centroidMatrix.size(); b++) {
-				pair.at(0) = computeCountCosineSimilarity(matrix.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
+				pair.at(0) = computeCountCosineSimilarity2(matrix2.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
 				pair.at(1) = a + 1; //document number
 				
 				//insertRanking(singleDocRank, pair); //insert into single document ranking
@@ -378,7 +402,7 @@ int main(){
 			classAndDocNum.at(pair.at(1)) = maxCosClass; //Saving class number for each document
 			insertRanking(classMatrix.at(maxCosClass-1), pair); //Insert similarity ordered class ranking to class matrix
 			
-			//recomputeCentroid(classMatrix.at(maxCosClass-1), centroidMatrix, matrix,maxCosClass);
+			recomputeCentroid(classMatrix.at(maxCosClass-1), centroidMatrix, matrix2 ,maxCosClass);
 			//recomputeCosineSim(classMatrix, matrix, centroidMatrix, classNumber, maxCosClass);
 
 			//singleDocRank.clear();
