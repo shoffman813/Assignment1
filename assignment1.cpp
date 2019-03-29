@@ -233,15 +233,55 @@ void randomizeCentroids(int classNum, int wordsSize, vector<vector<int> > &cMatr
 	return;
 }
 
-/*
-void Rocchio(int classNum, int wordsSize, vector<vector<int> > &cMatrix, vector<vector<int> > &dMatrix) {
+//Recomputes a centroid for a given class and saves it to the centroid matrix
+void recomputeCentroid(vector<vector<vector<double> > > &classMatrix, vector<vector<int> > &centroidMatrix, vector<vector<int> > &matrix, int classNumber) {
 
-	int docFlag = 0; //Flag for whether or not a document changes classes
+	int dc = classMatrix.at(classNumber).size(); //Number of documents in cluster
+	int docLength = matrix.at(0).size(); //length of each document vector
+	vector<int> newCentroid(docLength); //new centroid
+	vector<int> sum(docLength); //sum of document vectors
+	int docNum = classMatrix.at(classNumber).at(0).at(1); //initialize document number to the first of the class
+
+	for(int a = 1; a < dc ; a++) { //finding the sum of vectors in cluster
+		for(int b = 0; b < docLength; b++) {
+			sum.at(b) += matrix.at(docNum).at(b); //adding each column from a single document vector
+		}
+		docNum = classMatrix.at(classNumber).at(a).at(1); //getting each document number from the cluster
+	}
+
+	for(int c = 0; c < sum.size(); c++) { //dividing each number in vector by the number of documents in the cluster
+		newCentroid.at(c) = sum.at(c) / dc;
+	}
+
+	for(int d = 0; d < newCentroid.size(); d++) { //Adding new centroid to centroid matrix
+		centroidMatrix.at(classNumber).at(d) = newCentroid.at(d);
+	}
 	
-
 	return;
-}*/
-	
+}
+
+//Recomputes the cosine similarity for the least similar classes
+int recomputeCosineSim(vector<vector<vector<double> > > &classMatrix, vector<vector<int> > &matrix, vector<vector<int> > &centroidMatrix, int totalClassCount, int currentClass) {
+	int docNum = classMatrix.at(currentClass).at(0).at(1); //initialize document number to the first of the class
+	int docLength = matrix.at(0).size(); //length of the document vectors
+	int classSize = classMatrix.at(currentClass).size();
+	vector<double> pair(2);
+	vector<double> savedPair(2);
+	int classChangeFlag = 0;
+
+	for(int a = classSize-1; a >= 0 ; a--) { //for each document in the class
+		for(int b = 0; b < totalClassCount; b++) { //for each centroid
+			pair.at(0) = computeCountCosineSimilarity(matrix.at(docNum), centroidMatrix.at(b)); //recomputing cosine similarity for each pair
+			pair.at(1) = docNum;
+			if(pair.at(0) > classMatrix.at(currentClass).at(a).at(0)) {
+				savedPair = pair;
+				classChangeFlag = 1;
+			}
+		}
+	}
+	return classChangeFlag;
+}
+
 int main(){
 	
 	//declarations
@@ -309,10 +349,10 @@ int main(){
 			return 0;
 		}
 		vector<vector<vector<double> > > classMatrix(classNumber); //need to fix initialization
-		//classMatrix.reserve(1400);
 
 		randomizeCentroids(classNumber, words.size(), centroidMatrix);
 
+		//Surround in while loop?
 		for(int a = 0; a < matrix.size(); a++) {
 			for(int b = 0; b < centroidMatrix.size(); b++) {
 				pair.at(0) = computeCountCosineSimilarity(matrix.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
@@ -320,20 +360,18 @@ int main(){
 				insertRanking(singleDocRank, pair); //insert into single document ranking
 				if(pair.at(0) == singleDocRank.at(0).at(0))
 					maxCosClass = b;
-				//if(pair.at(0) > maxCosClass) maxCosClass = b;
 			}
 			cout << "Max class for document " << a+1 << " is " << maxCosClass << endl;
 			pair = singleDocRank.at(0); //This is centroid/doc pair with the greatest cosine similarity
 			classAndDocNum.at(pair.at(1)) = maxCosClass; //Saving class number for each document
-			cout << endl << "here4" << endl;
-			insertRanking(classMatrix.at(maxCosClass), pair); //problem line... adding to empty matrix, jumping ahead in memory
-			cout << endl << "here4.5" << endl;
+			insertRanking(classMatrix.at(maxCosClass), pair); //Insert similarity ordered class ranking to class matrix
+			
+			recomputeCentroid(classMatrix, centroidMatrix, matrix, maxCosClass);
+			recomputeCosineSim(classMatrix, matrix, centroidMatrix, classNumber, maxCosClass);
+
 			singleDocRank.clear();
-			cout << endl << "here5" << endl;
 		}
 			
-		//Rocchio(classNumber, words.size(), centroidMatrix, matrix);
-
 		/*Rocchio ends here*/
 
 		doc_rank1.clear();
