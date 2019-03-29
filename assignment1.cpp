@@ -224,7 +224,8 @@ void randomizeCentroids(int classNum, int wordsSize, vector<vector<double> > &cM
 	vector<double> v;
 	for(int i=0; i < classNum; i++) {
 		for(int j = 0; j< wordsSize; j++) {
-			a = rand()%2;
+			srand(time(NULL));
+			a = rand()%9000;
 			v.push_back(a);
 		}
 		cMatrix.push_back(v);
@@ -383,13 +384,14 @@ int main(){
 		vector<vector<double> > matrix2;
 		matrix2.reserve(matrix.size());
 		for (auto&& v : matrix) matrix2.emplace_back(begin(v), end(v));
-		
+	
 		for(int a = 0; a < matrix.size(); a++) {
 			maxCos = 0;
 			for(int b = 0; b < centroidMatrix.size(); b++) {
+				cout << endl << "centroid matrix size = " << centroidMatrix.size() << endl;
 				pair.at(0) = computeCountCosineSimilarity2(matrix2.at(a), centroidMatrix.at(b)); //computer cosine similarity for each doc/centroid pair
 				pair.at(1) = a + 1; //document number
-				
+				cout << endl << "cosine similarity = " << pair.at(0) << endl;
 				//insertRanking(singleDocRank, pair); //insert into single document ranking
 				if(pair.at(0) > maxCos){
 					maxCosClass = b+1;
@@ -403,10 +405,14 @@ int main(){
 			insertRanking(classMatrix.at(maxCosClass-1), pair); //Insert similarity ordered class ranking to class matrix
 			
 			recomputeCentroid(classMatrix.at(maxCosClass-1), centroidMatrix, matrix2 ,maxCosClass);
-			//recomputeCosineSim(classMatrix, matrix, centroidMatrix, classNumber, maxCosClass);
+			//recomputeCosineSim(classMatrix, matrix2, centroidMatrix, classNumber, maxCosClass);
 
 			//singleDocRank.clear();
 		}
+
+		//centroidMatrix.clear();
+		//classMatrix.clear();
+		//matrix2.clear();
 			
 		/*Rocchio ends here*/
 
