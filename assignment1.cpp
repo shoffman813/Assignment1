@@ -234,9 +234,9 @@ void randomizeCentroids(int classNum, int wordsSize, vector<vector<int> > &cMatr
 }
 
 //Recomputes a centroid for a given class and saves it to the centroid matrix
-void recomputeCentroid(vector<vector<vector<double> > > &classMatrix, vector<vector<int> > &centroidMatrix, vector<vector<int> > &matrix, int classNumber) {
+void recomputeCentroid(vector<vector<double> > &docClass, vector<vector<int> > &centroidMatrix, vector<vector<int> > &matrix,int classNumber) {
 
-	int dc = classMatrix.at(classNumber-1).size(); //Number of documents in cluster
+	int dc = docClass.size(); //Number of documents in cluster
 	int docLength = matrix.at(0).size(); //length of each document vector
 	vector<int> newCentroid(docLength); //new centroid
 	vector<int> sum(docLength); //sum of document vectors
@@ -246,7 +246,7 @@ void recomputeCentroid(vector<vector<vector<double> > > &classMatrix, vector<vec
 	}	
 
 	for(int a = 0; a < dc ; a++) { //finding the sum of vectors in cluster
-		int docNum = classMatrix.at(classNumber-1).at(a).at(1);
+		int docNum = docClass.at(a).at(1);
 		for(int b = 0; b < docLength; b++) {
 			sum.at(b) += matrix.at(docNum-1).at(b); //adding each column from a single document vector
 		}
@@ -255,7 +255,7 @@ void recomputeCentroid(vector<vector<vector<double> > > &classMatrix, vector<vec
 	for(int c = 0; c < sum.size(); c++) { //dividing each number in vector by the number of documents in the cluster
 		newCentroid.at(c) = sum.at(c) / dc;
 	}
-
+	
 	for(int d = 0; d < newCentroid.size(); d++) { //Adding new centroid to centroid matrix
 		centroidMatrix.at(classNumber-1).at(d) = newCentroid.at(d);
 	}
@@ -378,7 +378,7 @@ int main(){
 			classAndDocNum.at(pair.at(1)) = maxCosClass; //Saving class number for each document
 			insertRanking(classMatrix.at(maxCosClass-1), pair); //Insert similarity ordered class ranking to class matrix
 			
-			recomputeCentroid(classMatrix, centroidMatrix, matrix, maxCosClass);
+			//recomputeCentroid(classMatrix.at(maxCosClass-1), centroidMatrix, matrix,maxCosClass);
 			//recomputeCosineSim(classMatrix, matrix, centroidMatrix, classNumber, maxCosClass);
 
 			//singleDocRank.clear();
