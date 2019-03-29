@@ -410,7 +410,7 @@ int main(){
 			//singleDocRank.clear();
 		}
 
-		//centroidMatrix.clear();
+		centroidMatrix.clear();
 		//classMatrix.clear();
 		//matrix2.clear();
 			
